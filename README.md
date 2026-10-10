@@ -34,6 +34,6 @@ Limitations
 The assessment uses simple keyword-based logic and search results. It does not guarantee that a claim is true or false. Users should review the original sources and verify important claims independently.
 
 Security
+
 Keep API keys private. Never commit the ".env" file to a public repository.
-Keep API keys private. Never commit the ".env" file to a public repository.
-Keep API keys private. Neve
+
