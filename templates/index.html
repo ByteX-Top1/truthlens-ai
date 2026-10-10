@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>TruthLens AI</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="background-glow"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+
+        <div class="logo">
+            <div class="logo-icon">✦</div>
+
+            <div>
+                <h2>TruthLens</h2>
+                <span>AI Verification Agent</span>
+            </div>
+        </div>
+
+        <div class="nav-badge">
+            ⚡ Powered by SerpApi
+        </div>
+
+    </nav>
+
+
+    <!-- HERO -->
+    <main class="container">
+
+        <section class="hero">
+
+            <div class="ai-badge">
+                🤖 AI-POWERED WEB RESEARCH
+            </div>
+
+            <h1>
+                Don't just read it.
+                <span>Verify it.</span>
+            </h1>
+
+            <p>
+                Enter a news claim and let our research agent
+                search the web, collect evidence and show relevant sources.
+            </p>
+
+
+            <!-- SEARCH BOX -->
+            <form method="POST" class="search-box">
+
+                <div class="input-wrapper">
+
+                    <span class="search-icon">⌕</span>
+
+                    <input
+                        type="text"
+                        name="claim"
+                        value="{{ claim }}"
+                        placeholder="Enter a news claim to verify..."
+                        required
+                    >
+
+                </div>
+
+                <button type="submit" class="verify-btn">
+                    <span>🔍</span>
+                    Verify Claim
+                </button>
+
+            </form>
+
+
+            <div class="examples">
+
+                <span>Try:</span>
+
+                <button onclick="fillClaim('India launched Chandrayaan-3 in 2023')">
+                    Chandrayaan-3
+                </button>
+
+                <button onclick="fillClaim('The Moon is made entirely of water')">
+                    Moon water
+                </button>
+
+            </div>
+
+        </section>
+
+
+        {% if error %}
+
+        <div class="error-card">
+            ⚠️ {{ error }}
+        </div>
+
+        {% endif %}
+
+
+        {% if status %}
+
+        <!-- RESULT -->
+        <section class="result-section">
+
+            <div class="section-title">
+                <span>ANALYSIS RESULT</span>
+                <small>Automated evidence assessment</small>
+            </div>
+
+
+            <!-- STATUS CARD -->
+            <div class="status-card">
+
+                <div class="status-left">
+
+                    <div class="status-icon
+                        {% if status == 'Supported' %}
+                            supported
+                        {% elif status == 'Contradicted' %}
+                            contradicted
+                        {% else %}
+                            unclear
+                        {% endif %}">
+                        
+                        {% if status == 'Supported' %}
+                            ✓
+                        {% elif status == 'Contradicted' %}
+                            !
+                        {% else %}
+                            ?
+                        {% endif %}
+
+                    </div>
+
+                    <div>
+
+                        <span class="status-label">
+                            VERIFICATION STATUS
+                        </span>
+
+                        <h2>{{ status }}</h2>
+
+                        <p>{{ explanation }}</p>
+
+                    </div>
+
+                </div>
+
+                <div class="status-right">
+
+                    <div class="score-box">
+                        <strong>{{ support_score }}</strong>
+                        <span>Supporting</span>
+                    </div>
+
+                    <div class="score-box">
+                        <strong>{{ contradiction_score }}</strong>
+                        <span>Contradicting</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- SOURCES -->
+            <div class="sources-header">
+
+                <div>
+                    <h2>📚 Evidence Found</h2>
+                    <p>Relevant sources discovered by the research agent</p>
+                </div>
+
+                <div class="source-count">
+                    {{ results|length }} Sources
+                </div>
+
+            </div>
+
+
+            <div class="sources-grid">
+
+                {% for result in results %}
+
+                <article class="source-card">
+
+                    <div class="source-top">
+
+                        <span class="source-number">
+                            {{ loop.index }}
+                        </span>
+
+                        <span class="source-tag">
+                            WEB SOURCE
+                        </span>
+
+                    </div>
+
+                    <h3>
+                        {{ result.title }}
+                    </h3>
+
+                    <p>
+                        {{ result.snippet }}
+                    </p>
+
+                    {% if result.link %}
+
+                    <a href="{{ result.link }}"
+                       target="_blank"
+                       class="source-link">
+
+                        Read Original Source
+                        <span>↗</span>
+
+                    </a>
+
+                    {% endif %}
+
+                </article>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- DISCLAIMER -->
+            <div class="disclaimer">
+
+                <span>ⓘ</span>
+
+                <p>
+                    This result is an automated evidence assessment.
+                    Always check the original sources before treating
+                    a claim as confirmed fact.
+                </p>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        <!-- HOW IT WORKS -->
+        <section class="how-section">
+
+            <div class="section-title">
+                <span>HOW IT WORKS</span>
+                <small>Three simple steps</small>
+            </div>
+
+
+            <div class="steps">
+
+                <div class="step-card">
+
+                    <div class="step-icon">🔎</div>
+
+                    <span>01</span>
+
+                    <h3>Enter a Claim</h3>
+
+                    <p>
+                        Paste a news statement or claim
+                        you want to investigate.
+                    </p>
+
+                </div>
+
+
+                <div class="step-card">
+
+                    <div class="step-icon">🌐</div>
+
+                    <span>02</span>
+
+                    <h3>Research the Web</h3>
+
+                    <p>
+                        The agent searches multiple
+                        web queries and collects sources.
+                    </p>
+
+                </div>
+
+
+                <div class="step-card">
+
+                    <div class="step-icon">🧠</div>
+
+                    <span>03</span>
+
+                    <h3>Review Evidence</h3>
+
+                    <p>
+                        Retrieved evidence is assessed
+                        and presented with source links.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer>
+
+        <div>
+            ✦ TruthLens AI
+        </div>
+
+        <span>
+            AI-assisted news verification • Built with SerpApi
+        </span>
+
+    </footer>
+
+
+    <script>
+
+        function fillClaim(text) {
+
+            document.querySelector(
+                'input[name="claim"]'
+            ).value = text;
+
+        }
+
+    </script>
+
+</body>
+</html>
